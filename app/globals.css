@@ -5,6 +5,7 @@
 body {
   background-color: black;
   color: white;
+  overflow-x: hidden;
 }
 
 /* Main Heading gradient Color */
