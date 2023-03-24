@@ -1,90 +1,37 @@
-import Image from 'next/image'
-import { Inter } from 'next/font/google'
-import styles from './page.module.css'
+import SearchBar from "@/components/SearchBar"
+import Image from "next/image"
 
-const inter = Inter({ subsets: ['latin'] })
+const fetchData = async () => {
+  const res = await fetch("https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=false")
+  const data = await res.json()
+  return await data
+}
 
-export default function Home() {
+export default async function Home() {
+
+  const data = await fetchData()
+
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
+    <main>
+      <div className="flex flex-col gap-6 justify-center items-center mt-[70px]">
+        {data.map((coin: any, idx: number) => (
+          <div key={idx} className="w-[800px] h-18 bg-[#0F0F0F] opacity-8 p-5 flex items-center justify-between rounded-sm">
+            {/* left side */}
+            <div className="flex items-center gap-5">
+              <Image src={coin.image} alt="coin image" width={40} height={40} />
+              <div className="flex flex-col gap-1">
+                <h1 className="text-white font-black">{coin.symbol.toUpperCase()}<span className="text-[16px] text-[#767d92]"><sub>/USDT</sub></span></h1>
+                <p className="text-[#767d92]">Vol. {coin.total_volume} M</p>
+              </div>
+            </div>
 
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-        <div className={styles.thirteen}>
-          <Image src="/thirteen.svg" alt="13" width={40} height={31} priority />
-        </div>
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://beta.nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={inter.className}>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p className={inter.className}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={inter.className}>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p className={inter.className}>Explore the Next.js 13 playground.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={inter.className}>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p className={inter.className}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
+            {/* Right side */}
+            <div>
+              <h1>$ {coin.current_price}</h1>
+              <p className="text-[#767d92]">{coin.market_cap}</p>
+            </div>
+          </div>
+        ))}
       </div>
     </main>
   )
